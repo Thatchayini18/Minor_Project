@@ -7,7 +7,7 @@
 
 The project is deployed and fully functional. You can explore the live dashboard here:
 
-🔗 https://.github.io/NeoCity/
+🔗 https://github.com/Thatchayini18/Minor_Project.git
 
 Test Credentials (from your smartcity.xml file):
 - **Admin**: `thatchu@gmail.com` / `thatchu1234` (Full access)
