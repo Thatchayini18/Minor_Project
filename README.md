@@ -1,4 +1,4 @@
-🌆 NeoCity 2.0 – Smart City Dashboard
+🌆 EcoCity 2.0 – Smart City Dashboard
 
 
 🌐 Live Demo
@@ -7,17 +7,17 @@
 
 The project is deployed and fully functional. You can explore the live dashboard here:
 
-🔗 https://ayaeljahidi.github.io/NeoCity/
+🔗 https://.github.io/NeoCity/
 
 Test Credentials (from your smartcity.xml file):
-- **Admin**: `ayaeljahidi@gmail.com` / `aya1234` (Full access)
-- **Security Officer**: `security@neocity.gov` / `Secure456!`
-- **Environmental Officer**: `imranerrafi@gmail.com` / `imrane@2005`
+- **Admin**: `thatchu@gmail.com` / `thatchu1234` (Full access)
+- **Security Officer**: `iamrose@neocity.gov` / `Rose456!`
+- **Environmental Officer**: `iamsaras@gmail.com` / `Saras@2005`
 
 
 
 ## 📋 Project Overview
-NeoCity 2.0 is a comprehensive smart city monitoring and management system with a modern, responsive web interface. The system provides real-time insights into city infrastructure, security, environment, and public services through an interactive dashboard with role-based access control.
+EcoCity 2.0 is a comprehensive smart city monitoring and management system with a modern, responsive web interface. The system provides real-time insights into city infrastructure, security, environment, and public services through an interactive dashboard with role-based access control.
 
 ## 🏗️ System Architecture
 
@@ -29,7 +29,7 @@ NeoCity 2.0 is a comprehensive smart city monitoring and management system with 
 5. **Responsive Web Interface** - Modern UI with real-time monitoring
 
 ## 📁 Project Structure
-NeoCity/
+EcoCity/
 │
 ├── 📄 index.html # Login page with modern UI
 ├── 📄 login.js # Authentication logic
