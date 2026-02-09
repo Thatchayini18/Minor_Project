@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="dashboard.xsl"?>
 
-<smartCity xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="smartcity.xsd" name="NeoCity 2.0" date="2026-01-16" version="2.0" population="850000">
+<smartCity xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="smartcity.xsd" name="EcoCity 2.0" date="2026-01-16" version="2.0" population="850000">
 
   <cityInfo>
     <mayor>Dr. Elena Rodriguez</mayor>
     <emergencyNumber>112</emergencyNumber>
-    <website>https://neocity.gov</website>
+    <website>https://ecocity.gov</website>
     <timezone>UTC+1</timezone>
     <status>Operational</status>
   </cityInfo>
 
   <users>
-    <user id="U1" password="aya1234" role="Admin" status="Active" department="CityManagement">
-      <name>AYA EL JAHIDI</name>
-      <email>ayaeljahidi@gmail.com</email>
+    <user id="U1" password="thatchu1234" role="Admin" status="Active" department="CityManagement">
+      <name>THATCHAYINI</name>
+      <email>thatchu@gmail.com</email>
       <permissions>full</permissions>
       <lastLogin>2026-01-16T08:30:00</lastLogin>
     </user>
 
-    <user id="U2" password="Secure456!" role="SecurityOfficer" status="Inactive" department="PublicSafety">
+    <user id="U2" password="Rose456!" role="SecurityOfficer" status="Inactive" department="PublicSafety">
       <name>Security Agent</name>
-      <email>security@neocity.gov</email>
+      <email>iamrose@ecocity.gov</email>
       <permissions>monitor,alert,respond</permissions>
       <lastLogin>2026-01-16T14:20:00</lastLogin>
     </user>
 
     <user id="U3" password="Manage789!" role="CityManager" status="Suspended" department="Infrastructure">
       <name>Infrastructure Manager</name>
-      <email>infra@neocity.gov</email>
+      <email>infra@ecocity.gov</email>
       <permissions>monitor,analyze</permissions>
 
       <lastLogin>2026-01-16T09:15:00</lastLogin>
@@ -36,15 +36,15 @@
 
     <user id="U4" password="Enviro321!" role="EnvironmentalOfficer" status="OnLeave" department="Environment">
       <name>Environmental Monitor</name>
-      <email>env@neocity.gov</email>
+      <email>env@ecocity.gov</email>
       <permissions>monitor,report</permissions>
 
       <lastLogin>2026-01-16T10:45:00</lastLogin>
     </user>
 
-    <user id="U5" password="imrane@2005" role="CityManager" status="Active" department="Infrastructure">
-      <name>Imrane Errafi</name>
-      <email>imranerrafi@gmail.com</email>
+    <user id="U5" password="Saras@2005" role="CityManager" status="Active" department="Infrastructure">
+      <name>Saras</name>
+      <email>iamsaras@gmail.com</email>
       <permissions>monitor,report</permissions>
       <lastLogin>2026-01-16T10:45:00</lastLogin>
 
