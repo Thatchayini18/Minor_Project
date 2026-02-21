@@ -4,7 +4,7 @@
 <smartCity xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="smartcity.xsd" name="EcoCity 2.0" date="2026-01-16" version="2.0" population="850000">
 
   <cityInfo>
-    <mayor>Dr. Elena Rodriguez</mayor>
+    <mayor>Dr. Arjun Venkatesh</mayor>
     <emergencyNumber>112</emergencyNumber>
     <website>https://ecocity.gov</website>
     <timezone>UTC+1</timezone>
