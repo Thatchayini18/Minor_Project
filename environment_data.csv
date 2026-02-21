@@ -1,0 +1,4 @@
+zone,temperature,humidity,pm2_5,pm10,no2,air_quality_level
+Industrial,18,65,65,85,30,Bad
+Downtown,18,65,35,45,18,Moderate
+Residential,18,65,15,22,8,Good
