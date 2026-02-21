@@ -77,8 +77,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (authenticated) {
                 // Store login state (optional)
-                sessionStorage.setItem('Ecocity_authenticated', 'true');
-                sessionStorage.setItem('Ecocity_user', email);
+                sessionStorage.setItem('ecocity_authenticated', 'true');
+                sessionStorage.setItem('ecocity_user', email);
 
                 // Redirect with permissions in URL
                 const params = new URLSearchParams({
