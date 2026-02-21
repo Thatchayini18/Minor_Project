@@ -1,1649 +1,503 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0"
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-
-<xsl:output method="html" indent="yes"/>
-
-<!-- Paramètre pour la langue -->
-<xsl:param name="lang" select="'en'"/>
-
-
-<!-- Charger les traductions -->
-<xsl:variable name="translations" select="document('translations.xml')"/>
-
-<!-- Template de traduction -->
-<xsl:template name="t">
-    <xsl:param name="key"/>
-    <xsl:value-of select="$translations/translations/translation[@key=$key]/lang[@code=$lang]"/>
-</xsl:template>
-
-<xsl:template match="/">
-<html lang="{$lang}">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>NeoCity 2.0 | <xsl:call-template name="t"><xsl:with-param name="key" select="'dashboard_title'"/></xsl:call-template></title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script> 
-    <link rel="stylesheet" href="./style.css" type="text/css"></link>
-</head>
-<body>
-    <div class="dashboard-container">
-        <!-- Header -->
-        <header class="header">
-            <div class="city-info">
-                <div class="city-logo">
-                    <i class="fas fa-city"></i>
-                </div>
-                <div class="city-text">
-                    <h1><xsl:value-of select="/smartCity/@name"/></h1>
-                    <div class="city-subtitle">
-                        <xsl:call-template name="t">
-                            <xsl:with-param name="key" select="'dashboard_title'"/>
-                        </xsl:call-template>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="city-stats">
-                <div class="stat-badge">
-                    <div class="stat-value"><xsl:value-of select="format-number(/smartCity/@population, '#,##0')"/></div>
-                    <div class="stat-label">
-                        <xsl:call-template name="t">
-                            <xsl:with-param name="key" select="'population'"/>
-                        </xsl:call-template>
-                    </div>
-                </div>
-                <div class="stat-badge">
-                    <div class="stat-value">v<xsl:value-of select="/smartCity/@version"/></div>
-                    <div class="stat-label">
-                        <xsl:call-template name="t">
-                            <xsl:with-param name="key" select="'version'"/>
-                        </xsl:call-template>
-                    </div>
-                </div>
-                <div class="stat-badge">
-                    <div class="stat-value">
-                        <xsl:value-of select="/smartCity/cityInfo/status"/>
-                    </div>
-                    <div class="stat-label">
-                        <xsl:call-template name="t">
-                            <xsl:with-param name="key" select="'status'"/>
-                        </xsl:call-template>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Language Selector -->
-            <div class="language-selector">
-                <a href="?lang=en" class="lang-btn {$lang = 'en'}">
-                    <i class="fas fa-globe"></i> EN
-                </a>
-                <a href="?lang=fr" class="lang-btn {$lang = 'fr'}">
-                    <i class="fas fa-globe"></i> FR
-                </a>
-            </div>
-
-<div class="logout-btn" onclick="logout()">
-    <i class="fas fa-sign-out-alt"></i>
-    <xsl:call-template name="t">
-        <xsl:with-param name="key" select="'logout'"/>
-    </xsl:call-template>
-</div>
-
-        </header>
-
-        <!-- Navigation -->
-        <nav class="nav-container">
-            <div class="nav-scroll">
-                <button class="nav-btn active" onclick="showSection('overview')">
-                    <i class="fas fa-tachometer-alt"></i>
-                    <xsl:call-template name="t">
-                        <xsl:with-param name="key" select="'overview'"/>
-                    </xsl:call-template>
-                </button>
-                <button class="nav-btn" onclick="showSection('traffic')">
-                    <i class="fas fa-traffic-light"></i>
-                    <xsl:call-template name="t">
-                        <xsl:with-param name="key" select="'traffic'"/>
-                    </xsl:call-template>
-                </button>
-                <button class="nav-btn" onclick="showSection('security')">
-                    <i class="fas fa-shield-alt"></i>
-                    <xsl:call-template name="t">
-                        <xsl:with-param name="key" select="'security'"/>
-                    </xsl:call-template>
-                </button>
-                <button class="nav-btn" onclick="showSection('environment')">
-                    <i class="fas fa-leaf"></i>
-                    <xsl:call-template name="t">
-                        <xsl:with-param name="key" select="'environment'"/>
-                    </xsl:call-template>
-                </button>
-                <button class="nav-btn" onclick="showSection('services')">
-                    <i class="fas fa-hospital"></i>
-                    <xsl:call-template name="t">
-                        <xsl:with-param name="key" select="'services'"/>
-                    </xsl:call-template>
-                </button>
-                <button class="nav-btn" onclick="showSection('iot')">
-                    <i class="fas fa-microchip"></i>
-                    <xsl:call-template name="t">
-                        <xsl:with-param name="key" select="'iot'"/>
-                    </xsl:call-template>
-                </button>
-                <button class="nav-btn" onclick="showSection('users')">
-                    <i class="fas fa-users"></i>
-                    <xsl:call-template name="t">
-                        <xsl:with-param name="key" select="'users'"/>
-                    </xsl:call-template>
-                </button>
-                <button class="nav-btn" onclick="showSection('analytics')">
-                    <i class="fas fa-chart-line"></i>
-                    <xsl:call-template name="t">
-                        <xsl:with-param name="key" select="'analytics'"/>
-                    </xsl:call-template>
-                </button>
-            </div>
-        </nav>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            
-            <!-- Overview Section -->
-            <section id="overview" class="section active">
-                <!-- Quick Stats Row -->
-                <div class="quick-stats" style="grid-column: span 12;">
-                    <div class="quick-stat">
-                        <div class="quick-stat-label">
-                            <xsl:call-template name="t">
-                                <xsl:with-param name="key" select="'active_incidents'"/>
-                            </xsl:call-template>
-                        </div>
-                        <div class="quick-stat-value pulse" style="color: var(--danger);">
-                            <xsl:value-of select="count(/smartCity/security/incident[@status='Active' or @status='Investigating'])"/>
-                        </div>
-                    </div>
-                    <div class="quick-stat">
-                        <div class="quick-stat-label">
-                            <xsl:call-template name="t">
-                                <xsl:with-param name="key" select="'iot_connected'"/>
-                            </xsl:call-template>
-                        </div>
-                        <div class="quick-stat-value" style="color: var(--success);">
-                            <xsl:value-of select="format-number(/smartCity/iotDevices/@connected, '#,##0')"/>
-                        </div>
-                    </div>
-                    <div class="quick-stat">
-                        <div class="quick-stat-label">
-                            <xsl:call-template name="t">
-                                <xsl:with-param name="key" select="'air_quality'"/>
-                            </xsl:call-template>
-                        </div>
-                        <div class="quick-stat-value">
-                            <xsl:value-of select="count(/smartCity/environment/airQuality/sensor[qualityIndex='Good' or qualityIndex='Excellent'])"/>/<xsl:value-of select="count(/smartCity/environment/airQuality/sensor)"/>
-                        </div>
-                    </div>
-                    <div class="quick-stat">
-                        <div class="quick-stat-label">
-                            <xsl:call-template name="t">
-                                <xsl:with-param name="key" select="'response_time'"/>
-                            </xsl:call-template>
-                        </div>
-                        <div class="quick-stat-value">
-                            <xsl:variable name="avgResponse" select="sum(/smartCity/security/incident/responseTime) div count(/smartCity/security/incident[responseTime])"/>
-                            <xsl:choose>
-                                <xsl:when test="$avgResponse &gt; 0">
-                                    <xsl:value-of select="format-number($avgResponse, '0.0')"/>min
-                                </xsl:when>
-                                <xsl:otherwise>N/A</xsl:otherwise>
-                            </xsl:choose>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Main Cards -->
-                <div class="overview-grid">
-                    <!-- City Health Score -->
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-heartbeat"></i>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'city_health_score'"/>
-                                </xsl:call-template>
-                            </h3>
-                            <span class="status-badge status-high">
-                                <span class="status-dot"></span>
-                                <xsl:value-of select="/smartCity/analytics/cityHealth/@trend"/>
-                            </span>
-                        </div>
-                        <div class="kpi-value">
-                            <xsl:value-of select="/smartCity/analytics/cityHealth/@score"/>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: {/smartCity/analytics/cityHealth/@score}%"></div>
-                        </div>
-                        <div class="kpi-trend">
-                            <i class="fas fa-arrow-up trend-down"></i>
-                            <span>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'requires_attention'"/>
-                                </xsl:call-template>
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- IoT Connectivity -->
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-wifi"></i>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'iot_connectivity'"/>
-                                </xsl:call-template>
-                            </h3>
-                        </div>
-                        <xsl:variable name="iotPercent" select="round(/smartCity/iotDevices/@connected div /smartCity/iotDevices/@total * 100)"/>
-                        <div class="kpi-value">
-                            <xsl:value-of select="$iotPercent"/>%
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: {$iotPercent}%"></div>
-                        </div>
-                        <div class="kpi-trend">
-                            <i class="fas fa-arrow-up trend-up"></i>
-                            <span>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'excellent_connection'"/>
-                                </xsl:call-template>
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- Environment Status -->
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-temperature-high"></i>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'environment_status'"/>
-                                </xsl:call-template>
-                            </h3>
-                        </div>
-                        <div class="kpi-value">
-                            <xsl:value-of select="/smartCity/environment/weather/current/temperature"/>°C
-                        </div>
-                        <div class="kpi-label">
-                            <xsl:call-template name="t">
-                                <xsl:with-param name="key" select="'temperature'"/>
-                            </xsl:call-template> • 
-                            <xsl:call-template name="t">
-                                <xsl:with-param name="key" select="'humidity'"/>
-                            </xsl:call-template>: <xsl:value-of select="/smartCity/environment/weather/current/humidity"/>%
-                        </div>
-                        <div class="kpi-trend">
-                            <i class="fas fa-wind"></i>
-                            <span>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'wind'"/>
-                                </xsl:call-template>: <xsl:value-of select="/smartCity/environment/weather/current/windSpeed"/> km/h
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- Recent Incidents Table -->
-                    <div class="dashboard-card" style="grid-column: span 12;">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-history"></i>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'recent_incidents'"/>
-                                </xsl:call-template>
-                            </h3>
-                            <button class="status-badge status-medium" onclick="showSection('security')" style="cursor: pointer;">
-                                <span class="status-dot"></span>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'view_all'"/>
-                                </xsl:call-template>
-                            </button>
-                        </div>
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'type'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'severity'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'zone'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'status_label'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'time'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'response'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <xsl:for-each select="/smartCity/security/incident">
-                                    <xsl:sort select="time" order="descending"/>
-                                    <xsl:if test="position() &lt;= 5">
-                                        <tr>
-                                            <td><xsl:value-of select="@type"/></td>
-                                            <td>
-                                                <span class="status-badge status-{translate(@severity,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')}">
-                                                    <span class="status-dot"></span>
-                                                    <xsl:value-of select="@severity"/>
-                                                </span>
-                                            </td>
-                                            <td><xsl:value-of select="zone"/></td>
-                                            <td><xsl:value-of select="@status"/></td>
-                                            <td><xsl:value-of select="substring(time, 12, 5)"/></td>
-                                            <td>
-                                                <xsl:choose>
-                                                    <xsl:when test="responseTime">
-                                                        <span style="color: var(--success); font-weight: 600;">
-                                                            <xsl:value-of select="responseTime"/> min
-                                                        </span>
-                                                    </xsl:when>
-                                                    <xsl:otherwise>
-                                                        <span style="color: var(--warning);">
-                                                            <xsl:call-template name="t">
-                                                                <xsl:with-param name="key" select="'pending'"/>
-                                                            </xsl:call-template>
-                                                        </span>
-                                                    </xsl:otherwise>
-                                                </xsl:choose>
-                                            </td>
-                                        </tr>
-                                    </xsl:if>
-                                </xsl:for-each>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Traffic Section -->
-            <section id="traffic" class="section">
-                <div class="overview-grid">
-                    <!-- Traffic Overview -->
-                    <div class="dashboard-card" style="grid-column: span 12;">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-traffic-light"></i>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'traffic_management'"/>
-                                </xsl:call-template>
-                            </h3>
-                            <div class="quick-stats" style="display: flex; gap: 15px; margin: 0;">
-                                <div class="quick-stat" style="padding: 10px 15px; min-width: auto;">
-                                    <div class="quick-stat-label">
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'total_intersections'"/>
-                                        </xsl:call-template>
-                                    </div>
-                                    <div class="quick-stat-value" style="font-size: 1.5rem;">
-                                        <xsl:value-of select="count(/smartCity/infrastructure/traffic/intersection)"/>
-                                    </div>
-                                </div>
-                                <div class="quick-stat" style="padding: 10px 15px; min-width: auto;">
-                                    <div class="quick-stat-label">
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'average_speed'"/>
-                                        </xsl:call-template>
-                                    </div>
-                                    <div class="quick-stat-value" style="font-size: 1.5rem;">
-                                        <xsl:value-of select="format-number(sum(/smartCity/infrastructure/traffic/intersection/avgSpeed) div count(/smartCity/infrastructure/traffic/intersection), '0')"/> km/h
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Intersections Table -->
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Intersection ID</th>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'zone'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'congestion_level'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'average_speed'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'last_update'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <xsl:for-each select="/smartCity/infrastructure/traffic/intersection">
-                                    <tr>
-                                        <td><xsl:value-of select="@id"/></td>
-                                        <td><xsl:value-of select="@zone"/></td>
-                                        <td>
-                                            <xsl:choose>
-                                                <xsl:when test="congestionLevel='High' or congestionLevel='Severe'">
-                                                    <span class="status-badge status-high">
-                                                        <span class="status-dot"></span>
-                                                        <xsl:value-of select="congestionLevel"/>
-                                                    </span>
-                                                </xsl:when>
-                                                <xsl:when test="congestionLevel='Medium'">
-                                                    <span class="status-badge status-medium">
-                                                        <span class="status-dot"></span>
-                                                        <xsl:value-of select="congestionLevel"/>
-                                                    </span>
-                                                </xsl:when>
-                                                <xsl:otherwise>
-                                                    <span class="status-badge status-low">
-                                                        <span class="status-dot"></span>
-                                                        <xsl:value-of select="congestionLevel"/>
-                                                    </span>
-                                                </xsl:otherwise>
-                                            </xsl:choose>
-                                        </td>
-                                        <td><xsl:value-of select="avgSpeed"/> km/h</td>
-                                        <td><xsl:value-of select="substring(lastUpdate, 12, 5)"/></td>
-                                    </tr>
-                                </xsl:for-each>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Public Transport -->
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-bus"></i>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'public_transport'"/>
-                                </xsl:call-template>
-                            </h3>
-                        </div>
-                        <div class="metrics-grid">
-                            <xsl:for-each select="/smartCity/infrastructure/publicTransport/*">
-                                <div class="kpi-card">
-                                    <div class="kpi-value">
-                                        <xsl:value-of select="@id"/>
-                                    </div>
-                                    <div class="kpi-label">
-                                        <xsl:value-of select="local-name()"/>
-                                    </div>
-                                    <div class="kpi-trend">
-                                        <xsl:choose>
-                                            <xsl:when test="@status='Delayed'">
-                                                <i class="fas fa-exclamation-triangle" style="color: var(--warning);"></i>
-                                                <span>
-                                                    <xsl:call-template name="t">
-                                                        <xsl:with-param name="key" select="'delayed'"/>
-                                                    </xsl:call-template>: <xsl:value-of select="delayMinutes"/> min
-                                                </span>
-                                            </xsl:when>
-                                            <xsl:otherwise>
-                                                <i class="fas fa-check-circle" style="color: var(--success);"></i>
-                                                <span>
-                                                    <xsl:call-template name="t">
-                                                        <xsl:with-param name="key" select="'on_time'"/>
-                                                    </xsl:call-template>: <xsl:value-of select="delayMinutes"/> min
-                                                </span>
-                                            </xsl:otherwise>
-                                        </xsl:choose>
-                                    </div>
-                                    <div style="margin-top: 10px; font-size: 0.85rem;">
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'passengers'"/>
-                                        </xsl:call-template>: <xsl:value-of select="passengerCount"/>
-                                    </div>
-                                </div>
-                            </xsl:for-each>
-                        </div>
-                    </div>
-
-                    <!-- Energy Management -->
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-bolt"></i>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'energy_status'"/>
-                                </xsl:call-template>
-                            </h3>
-                        </div>
-                        <div class="kpi-value" style="font-size: 2rem;">
-                            <xsl:value-of select="/smartCity/infrastructure/energy/smartGrid/@loadPercentage"/>%
-                        </div>
-                        <div class="kpi-label">
-                            <xsl:call-template name="t">
-                                <xsl:with-param name="key" select="'smart_grid_load'"/>
-                            </xsl:call-template>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: {/smartCity/infrastructure/energy/smartGrid/@loadPercentage}%"></div>
-                        </div>
-                        <div style="margin-top: 20px;">
-                            <h4>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'power_plants'"/>
-                                </xsl:call-template>
-                            </h4>
-                            <xsl:for-each select="/smartCity/infrastructure/energy/powerPlant">
-                                <div style="margin-top: 10px; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                    <strong><xsl:value-of select="@id"/></strong>
-                                    (<xsl:value-of select="@type"/>)
-                                    <br/>
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'output'"/>
-                                    </xsl:call-template>: <xsl:value-of select="@outputMW"/> MW
-                                    <br/>
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'efficiency'"/>
-                                    </xsl:call-template>: <xsl:value-of select="efficiency"/>%
-                                </div>
-                            </xsl:for-each>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Security Section -->
-            <section id="security" class="section">
-                <div class="overview-grid">
-                    <!-- Security Overview -->
-                    <div class="dashboard-card" style="grid-column: span 12;">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-shield-alt"></i>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'security_incidents'"/>
-                                </xsl:call-template>
-                            </h3>
-                            <div class="quick-stats" style="display: flex; gap: 15px; margin: 0;">
-                                <div class="quick-stat" style="padding: 10px 15px; min-width: auto;">
-                                    <div class="quick-stat-label">
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'total_incidents'"/>
-                                        </xsl:call-template>
-                                    </div>
-                                    <div class="quick-stat-value" style="font-size: 1.5rem;">
-                                        <xsl:value-of select="count(/smartCity/security/incident)"/>
-                                    </div>
-                                </div>
-                                <div class="quick-stat" style="padding: 10px 15px; min-width: auto;">
-                                    <div class="quick-stat-label">
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'active'"/>
-                                        </xsl:call-template>
-                                    </div>
-                                    <div class="quick-stat-value" style="font-size: 1.5rem; color: var(--danger);">
-                                        <xsl:value-of select="count(/smartCity/security/incident[@status='Active' or @status='Investigating'])"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Incidents Table -->
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Incident ID</th>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'type'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'severity'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'zone'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'status_label'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'time'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'assigned_to'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'response_time'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <xsl:for-each select="/smartCity/security/incident">
-                                    <xsl:sort select="time" order="descending"/>
-                                    <tr>
-                                        <td><xsl:value-of select="@id"/></td>
-                                        <td><xsl:value-of select="@type"/></td>
-                                        <td>
-                                            <span class="status-badge status-{translate(@severity,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')}">
-                                                <span class="status-dot"></span>
-                                                <xsl:value-of select="@severity"/>
-                                            </span>
-                                        </td>
-                                        <td><xsl:value-of select="zone"/></td>
-                                        <td>
-                                            <xsl:choose>
-                                                <xsl:when test="@status='Active'">
-                                                    <span class="status-badge status-high">
-                                                        <span class="status-dot"></span>
-                                                        <xsl:call-template name="t">
-                                                            <xsl:with-param name="key" select="'active'"/>
-                                                        </xsl:call-template>
-                                                    </span>
-                                                </xsl:when>
-                                                <xsl:when test="@status='Investigating'">
-                                                    <span class="status-badge status-medium">
-                                                        <span class="status-dot"></span>
-                                                        <xsl:call-template name="t">
-                                                            <xsl:with-param name="key" select="'investigating'"/>
-                                                        </xsl:call-template>
-                                                    </span>
-                                                </xsl:when>
-                                                <xsl:when test="@status='Resolved'">
-                                                    <span class="status-badge status-low">
-                                                        <span class="status-dot"></span>
-                                                        <xsl:call-template name="t">
-                                                            <xsl:with-param name="key" select="'resolved'"/>
-                                                        </xsl:call-template>
-                                                    </span>
-                                                </xsl:when>
-                                                <xsl:when test="@status='Closed'">
-                                                    <span class="status-badge status-low">
-                                                        <span class="status-dot"></span>
-                                                        <xsl:call-template name="t">
-                                                            <xsl:with-param name="key" select="'closed'"/>
-                                                        </xsl:call-template>
-                                                    </span>
-                                                </xsl:when>
-                                                <xsl:otherwise>
-                                                    <xsl:value-of select="@status"/>
-                                                </xsl:otherwise>
-                                            </xsl:choose>
-                                        </td>
-                                        <td><xsl:value-of select="substring(time, 12, 5)"/></td>
-                                        <td><xsl:value-of select="assignedTo"/></td>
-                                        <td>
-                                            <xsl:choose>
-                                                <xsl:when test="responseTime">
-                                                    <span style="color: var(--success); font-weight: 600;">
-                                                        <xsl:value-of select="responseTime"/> min
-                                                    </span>
-                                                </xsl:when>
-                                                <xsl:otherwise>
-                                                    <span style="color: var(--warning);">
-                                                        <xsl:call-template name="t">
-                                                            <xsl:with-param name="key" select="'pending'"/>
-                                                        </xsl:call-template>
-                                                    </span>
-                                                </xsl:otherwise>
-                                            </xsl:choose>
-                                        </td>
-                                    </tr>
-                                </xsl:for-each>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Surveillance Cameras -->
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-video"></i>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'surveillance_system'"/>
-                                </xsl:call-template>
-                            </h3>
-                        </div>
-                        <div class="metrics-grid">
-                            <xsl:for-each select="/smartCity/security/surveillance/camera">
-                                <div class="kpi-card">
-                                    <div class="kpi-value">
-                                        <xsl:value-of select="@id"/>
-                                    </div>
-                                    <div class="kpi-label">
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'zone'"/>
-                                        </xsl:call-template>: <xsl:value-of select="@zone"/>
-                                    </div>
-                                    <div class="kpi-trend">
-                                        <xsl:choose>
-                                            <xsl:when test="@status='Active'">
-                                                <i class="fas fa-check-circle" style="color: var(--success);"></i>
-                                                <span>
-                                                    <xsl:call-template name="t">
-                                                        <xsl:with-param name="key" select="'active'"/>
-                                                    </xsl:call-template>
-                                                </span>
-                                            </xsl:when>
-                                            <xsl:otherwise>
-                                                <i class="fas fa-tools" style="color: var(--warning);"></i>
-                                                <span>Maintenance</span>
-                                            </xsl:otherwise>
-                                        </xsl:choose>
-                                    </div>
-                                    <div style="margin-top: 10px; font-size: 0.85rem;">
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'last_motion'"/>
-                                        </xsl:call-template>: <xsl:value-of select="substring(lastMotion, 12, 5)"/>
-                                        <br/>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'ai_detection'"/>
-                                        </xsl:call-template>: <xsl:value-of select="aiDetection"/>
-                                    </div>
-                                </div>
-                            </xsl:for-each>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Environment Section -->
-            <section id="environment" class="section">
-                <div class="overview-grid">
-                    <!-- Air Quality -->
-                    <div class="dashboard-card" style="grid-column: span 12;">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-wind"></i>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'air_quality_monitoring'"/>
-                                </xsl:call-template>
-                            </h3>
-                        </div>
-                        <div class="metrics-grid">
-                            <xsl:for-each select="/smartCity/environment/airQuality/sensor">
-                                <div class="kpi-card">
-                                    <div class="kpi-value">
-                                        <xsl:value-of select="qualityIndex"/>
-                                    </div>
-                                    <div class="kpi-label">
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'zone'"/>
-                                        </xsl:call-template>: <xsl:value-of select="@zone"/>
-                                    </div>
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: {pm25 div 100 * 100}%"></div>
-                                    </div>
-                                    <div style="margin-top: 10px; font-size: 0.8rem;">
-                                        PM2.5: <xsl:value-of select="pm25"/>
-                                        <br/>
-                                        PM10: <xsl:value-of select="pm10"/>
-                                        <br/>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'last_update'"/>
-                                        </xsl:call-template>: <xsl:value-of select="substring(timestamp, 12, 5)"/>
-                                    </div>
-                                </div>
-                            </xsl:for-each>
-                        </div>
-                    </div>
-
-                    <!-- Weather -->
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-sun"></i>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'current_weather'"/>
-                                </xsl:call-template>
-                            </h3>
-                        </div>
-                        <div class="kpi-value">
-                            <xsl:value-of select="/smartCity/environment/weather/current/temperature"/>°C
-                        </div>
-                        <div class="kpi-label">
-                            <xsl:value-of select="/smartCity/environment/weather/current/condition"/>
-                        </div>
-                        <div class="kpi-trend">
-                            <i class="fas fa-tint"></i>
-                            <span>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'humidity'"/>
-                                </xsl:call-template>: <xsl:value-of select="/smartCity/environment/weather/current/humidity"/>%
-                            </span>
-                        </div>
-                        <div class="kpi-trend">
-                            <i class="fas fa-wind"></i>
-                            <span>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'wind'"/>
-                                </xsl:call-template>: <xsl:value-of select="/smartCity/environment/weather/current/windSpeed"/> km/h
-                            </span>
-                        </div>
-                        
-                        <!-- Forecast -->
-                        <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
-                            <h4>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'tomorrow_forecast'"/>
-                                </xsl:call-template>
-                            </h4>
-                            <div style="display: flex; justify-content: space-between; margin-top: 10px;">
-                                <div>
-                                    <div style="font-size: 1.2rem; font-weight: bold;">
-                                        <xsl:value-of select="/smartCity/environment/weather/forecast[@period='Tomorrow']/high"/>°C
-                                    </div>
-                                    <div style="font-size: 0.8rem;">
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'high'"/>
-                                        </xsl:call-template>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div style="font-size: 1.2rem; font-weight: bold;">
-                                        <xsl:value-of select="/smartCity/environment/weather/forecast[@period='Tomorrow']/low"/>°C
-                                    </div>
-                                    <div style="font-size: 0.8rem;">
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'low'"/>
-                                        </xsl:call-template>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div style="font-size: 1.2rem;">
-                                        <xsl:value-of select="/smartCity/environment/weather/forecast[@period='Tomorrow']/condition"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Waste Management -->
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-trash-alt"></i>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'waste_management'"/>
-                                </xsl:call-template>
-                            </h3>
-                        </div>
-                        <div class="kpi-value">
-                            <xsl:value-of select="/smartCity/environment/wasteManagement/recyclingRate"/>%
-                        </div>
-                        <div class="kpi-label">
-                            <xsl:call-template name="t">
-                                <xsl:with-param name="key" select="'recycling_rate'"/>
-                            </xsl:call-template>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: {/smartCity/environment/wasteManagement/recyclingRate}%"></div>
-                        </div>
-                        
-                        <!-- Smart Bins -->
-                        <div style="margin-top: 20px;">
-                            <h4>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'smart_bins'"/>
-                                </xsl:call-template>
-                            </h4>
-                            <xsl:for-each select="/smartCity/environment/wasteManagement/smartBin">
-                                <div style="margin-top: 10px; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                    <strong><xsl:value-of select="@id"/></strong> - <xsl:value-of select="@zone"/>
-                                    <br/>
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'fill_level'"/>
-                                    </xsl:call-template>: <xsl:value-of select="@fillLevel"/>%
-                                    <br/>
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'next_collection'"/>
-                                    </xsl:call-template>: <xsl:value-of select="substring(nextCollection, 12, 5)"/>
-                                </div>
-                            </xsl:for-each>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Services Section -->
-            <section id="services" class="section">
-                <div class="overview-grid">
-                    <!-- Hospital -->
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-hospital"></i>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'hospital_status'"/>
-                                </xsl:call-template>
-                            </h3>
-                        </div>
-                        <xsl:variable name="totalBeds" select="sum(/smartCity/services/hospital/@bedsAvailable)"/>
-                        <xsl:variable name="totalHospitals" select="count(/smartCity/services/hospital)"/>
-                        <div class="kpi-value">
-                            <xsl:value-of select="$totalBeds"/>
-                        </div>
-                        <div class="kpi-label">
-                            <xsl:call-template name="t">
-                                <xsl:with-param name="key" select="'total_beds_available'"/>
-                            </xsl:call-template> (<xsl:value-of select="$totalHospitals"/>
-                            <xsl:call-template name="t">
-                                <xsl:with-param name="key" select="'hospitals'"/>
-                            </xsl:call-template>)
-                        </div>
-                        <div class="kpi-trend">
-                            <i class="fas fa-clock"></i>
-                            <span>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'avg_waiting'"/>
-                                </xsl:call-template>: <xsl:value-of select="format-number(sum(/smartCity/services/hospital/@waitingTime) div $totalHospitals, '0')"/> min
-                            </span>
-                        </div>
-                        <div style="margin-top: 15px;">
-                            <h4>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'all_hospitals'"/>
-                                </xsl:call-template>
-                            </h4>
-                            <xsl:for-each select="/smartCity/services/hospital">
-                                <div style="margin-top: 10px; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                    <strong><xsl:value-of select="@id"/></strong> - <xsl:value-of select="@zone"/>
-                                    <br/>
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'beds'"/>
-                                    </xsl:call-template>: <xsl:value-of select="@bedsAvailable"/> • 
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'wait'"/>
-                                    </xsl:call-template>: <xsl:value-of select="@waitingTime"/> min
-                                </div>
-                            </xsl:for-each>
-                        </div>
-                    </div>
-
-                    <!-- School -->
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-school"></i>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'school_status'"/>
-                                </xsl:call-template>
-                            </h3>
-                        </div>
-                        <xsl:variable name="totalStudents" select="sum(/smartCity/services/school/studentsPresent)"/>
-                        <xsl:variable name="totalSchools" select="count(/smartCity/services/school)"/>
-                        <div class="kpi-value">
-                            <xsl:value-of select="$totalStudents"/>
-                        </div>
-                        <div class="kpi-label">
-                            <xsl:call-template name="t">
-                                <xsl:with-param name="key" select="'students_present'"/>
-                            </xsl:call-template> (<xsl:value-of select="$totalSchools"/>
-                            <xsl:call-template name="t">
-                                <xsl:with-param name="key" select="'schools'"/>
-                            </xsl:call-template>)
-                        </div>
-                        <div class="kpi-trend">
-                            <xsl:variable name="openSchools" select="count(/smartCity/services/school[@status='Open'])"/>
-                            <i class="fas fa-check-circle" style="color: var(--success);"></i>
-                            <span><xsl:value-of select="$openSchools"/>/<xsl:value-of select="$totalSchools"/>
-                            <xsl:call-template name="t">
-                                <xsl:with-param name="key" select="'open'"/>
-                            </xsl:call-template></span>
-                        </div>
-                        <div style="margin-top: 15px;">
-                            <h4>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'all_schools'"/>
-                                </xsl:call-template>
-                            </h4>
-                            <xsl:for-each select="/smartCity/services/school">
-                                <div style="margin-top: 10px; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">
-                                    <strong><xsl:value-of select="@id"/></strong> - <xsl:value-of select="@zone"/>
-                                    <br/>
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'status_label'"/>
-                                    </xsl:call-template>: <xsl:value-of select="@status"/> • 
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'students'"/>
-                                    </xsl:call-template>: <xsl:value-of select="studentsPresent"/>
-                                </div>
-                            </xsl:for-each>
-                        </div>
-                    </div>
-
-                    <!-- Public WiFi -->
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-wifi"></i>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'public_wifi'"/>
-                                </xsl:call-template>
-                            </h3>
-                        </div>
-                        <xsl:for-each select="/smartCity/services/publicWiFi">
-                            <div class="kpi-value">
-                                <xsl:value-of select="@uptime"/>%
-                            </div>
-                            <div class="kpi-label">
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'uptime'"/>
-                                </xsl:call-template>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: {@uptime}%"></div>
-                            </div>
-                            <div style="margin-top: 20px;">
-                                <div style="display: flex; justify-content: space-between;">
-                                    <div>
-                                        <div style="font-size: 1.5rem; font-weight: bold;">
-                                            <xsl:value-of select="@accessPoints"/>
-                                        </div>
-                                        <div style="font-size: 0.8rem;">
-                                            <xsl:call-template name="t">
-                                                <xsl:with-param name="key" select="'access_points'"/>
-                                            </xsl:call-template>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div style="font-size: 1.5rem; font-weight: bold;">
-                                            <xsl:value-of select="activeConnections"/>
-                                        </div>
-                                        <div style="font-size: 0.8rem;">
-                                            <xsl:call-template name="t">
-                                                <xsl:with-param name="key" select="'active_connections'"/>
-                                            </xsl:call-template>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </xsl:for-each>
-                    </div>
-                </div>
-            </section>
-
-            <!-- IoT Section -->
-            <section id="iot" class="section">
-                <div class="overview-grid">
-                    <!-- IoT Overview -->
-                    <div class="dashboard-card" style="grid-column: span 12;">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-microchip"></i>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'iot_network_status'"/>
-                                </xsl:call-template>
-                            </h3>
-                            <div class="quick-stats" style="display: flex; gap: 15px; margin: 0;">
-                                <div class="quick-stat" style="padding: 10px 15px; min-width: auto;">
-                                    <div class="quick-stat-label">
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'total_devices'"/>
-                                        </xsl:call-template>
-                                    </div>
-                                    <div class="quick-stat-value" style="font-size: 1.5rem;">
-                                        <xsl:value-of select="format-number(/smartCity/iotDevices/@total, '#,##0')"/>
-                                    </div>
-                                </div>
-                                <div class="quick-stat" style="padding: 10px 15px; min-width: auto;">
-                                    <div class="quick-stat-label">
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'connected'"/>
-                                        </xsl:call-template>
-                                    </div>
-                                    <div class="quick-stat-value" style="font-size: 1.5rem; color: var(--success);">
-                                        <xsl:value-of select="format-number(/smartCity/iotDevices/@connected, '#,##0')"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- IoT Devices Breakdown -->
-                        <div class="metrics-grid" style="margin-top: 20px;">
-                            <xsl:for-each select="/smartCity/iotDevices/device">
-                                <div class="kpi-card">
-                                    <div class="kpi-value">
-                                        <xsl:value-of select="format-number(@count, '#,##0')"/>
-                                    </div>
-                                    <div class="kpi-label">
-                                        <xsl:value-of select="@type"/>
-                                    </div>
-                                    <xsl:variable name="percent" select="round(@count div /smartCity/iotDevices/@total * 100)"/>
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: {$percent}%"></div>
-                                    </div>
-                                    <div class="kpi-trend">
-                                        <span><xsl:value-of select="$percent"/>%
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'of_total'"/>
-                                        </xsl:call-template></span>
-                                    </div>
-                                </div>
-                            </xsl:for-each>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Users Section -->
-            <section id="users" class="section">
-                <div class="dashboard-card" style="grid-column: span 12;">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            <i class="fas fa-users"></i>
-                            <xsl:call-template name="t">
-                                <xsl:with-param name="key" select="'system_users'"/>
-                            </xsl:call-template>
-                        </h3>
-                        <div class="quick-stats" style="display: flex; gap: 15px; margin: 0;">
-                            <div class="quick-stat" style="padding: 10px 15px; min-width: auto;">
-                                <div class="quick-stat-label">
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'total_users'"/>
-                                    </xsl:call-template>
-                                </div>
-                                <div class="quick-stat-value" style="font-size: 1.5rem;">
-                                    <xsl:value-of select="count(/smartCity/users/user)"/>
-                                </div>
-                            </div>
-                            <div class="quick-stat" style="padding: 10px 15px; min-width: auto;">
-                                <div class="quick-stat-label">
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'active_now'"/>
-                                    </xsl:call-template>
-                                </div>
-                                <div class="quick-stat-value" style="font-size: 1.5rem; color: var(--success);">
-                                    <xsl:value-of select="count(/smartCity/users/user[@status='Active'])"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- User Cards Grid -->
-                    <div class="user-grid">
-                        <xsl:for-each select="/smartCity/users/user">
-                            <xsl:sort select="name"/>
-                            <div class="user-card">
-                                <div class="user-header">
-                                    <div class="user-avatar">
-                                        <xsl:value-of select="substring(name, 1, 1)"/>
-                                    </div>
-                                    <div class="user-info">
-                                        <h3><xsl:value-of select="name"/></h3>
-                                        <div class="user-role">
-                                            <span class="role-badge role-admin">
-                                                <i class="fas fa-user"></i>
-                                                <xsl:value-of select="@department"/>
-                                            </span>
-                                            <span class="status-badge status-{translate(@status,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')}">
-                                                <span class="status-dot"></span>
-                                                <xsl:value-of select="@status"/>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="user-details">
-                                    <div class="user-detail">
-                                        <span class="detail-label">
-                                            <xsl:call-template name="t">
-                                                <xsl:with-param name="key" select="'user_id'"/>
-                                            </xsl:call-template>:
-                                        </span>
-                                        <span class="detail-value"><xsl:value-of select="@id"/></span>
-                                    </div>
-                                    <div class="user-detail">
-                                        <span class="detail-label">
-                                            <xsl:call-template name="t">
-                                                <xsl:with-param name="key" select="'email'"/>
-                                            </xsl:call-template>:
-                                        </span>
-                                        <span class="detail-value"><xsl:value-of select="email"/></span>
-                                    </div>
-                                    <div class="user-detail">
-                                        <span class="detail-label">
-                                            <xsl:call-template name="t">
-                                                <xsl:with-param name="key" select="'department'"/>
-                                            </xsl:call-template>:
-                                        </span>
-                                        <span class="detail-value"><xsl:value-of select="@department"/></span>
-                                    </div>
-                                    <div class="user-detail">
-                                        <span class="detail-label">
-                                            <xsl:call-template name="t">
-                                                <xsl:with-param name="key" select="'last_activity'"/>
-                                            </xsl:call-template>:
-                                        </span>
-                                        <span class="detail-value">
-                                            <xsl:value-of select="substring(lastLogin, 12, 5)"/>
-                                            <xsl:text> today</xsl:text>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </xsl:for-each>
-                    </div>
-                    
-                    <!-- User Summary Table -->
-                    <div style="margin-top: 30px;">
-                        <h3 class="card-title" style="margin-bottom: 15px;">
-                            <i class="fas fa-table"></i>
-                            <xsl:call-template name="t">
-                                <xsl:with-param name="key" select="'user_details_table'"/>
-                            </xsl:call-template>
-                        </h3>
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'user_id'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'name'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'status_label'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'department'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'email'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                    <th>
-                                        <xsl:call-template name="t">
-                                            <xsl:with-param name="key" select="'last_activity'"/>
-                                        </xsl:call-template>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <xsl:for-each select="/smartCity/users/user">
-                                    <xsl:sort select="name"/>
-                                    <tr>
-                                        <td><xsl:value-of select="@id"/></td>
-                                        <td><strong><xsl:value-of select="name"/></strong></td>
-                                        <td>
-                                            <span class="status-badge status-{translate(@status,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')}">
-                                                <span class="status-dot"></span>
-                                                <xsl:value-of select="@status"/>
-                                            </span>
-                                        </td>
-                                        <td><xsl:value-of select="@department"/></td>
-                                        <td><xsl:value-of select="email"/></td>
-                                        <td>
-                                            <xsl:value-of select="substring(lastLogin, 12, 5)"/>
-                                        </td>
-                                    </tr>
-                                </xsl:for-each>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Analytics Section -->
-            <section id="analytics" class="section">
-                <div class="overview-grid">
-                    <!-- City Analytics Overview -->
-                    <div class="dashboard-card" style="grid-column: span 12;">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-chart-line"></i>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'city_analytics_dashboard'"/>
-                                </xsl:call-template>
-                            </h3>
-                        </div>
-                        
-                        <!-- Analytics KPIs -->
-                        <div class="metrics-grid">
-                            <div class="kpi-card">
-                                <div class="kpi-value">
-                                    <xsl:value-of select="/smartCity/analytics/cityHealth/@score"/>
-                                </div>
-                                <div class="kpi-label">
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'city_health_score'"/>
-                                    </xsl:call-template>
-                                </div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: {/smartCity/analytics/cityHealth/@score}%"></div>
-                                </div>
-                                <div class="kpi-trend">
-                                    <xsl:choose>
-                                        <xsl:when test="/smartCity/analytics/cityHealth/@trend='Improving'">
-                                            <i class="fas fa-arrow-up trend-up"></i>
-                                            <span>Trend: <xsl:value-of select="/smartCity/analytics/cityHealth/@trend"/></span>
-                                        </xsl:when>
-                                        <xsl:otherwise>
-                                            <i class="fas fa-arrow-down trend-down"></i>
-                                            <span>Trend: <xsl:value-of select="/smartCity/analytics/cityHealth/@trend"/></span>
-                                        </xsl:otherwise>
-                                    </xsl:choose>
-                                </div>
-                            </div>
-                            
-                            <div class="kpi-card">
-                                <div class="kpi-value">
-                                    <xsl:value-of select="/smartCity/analytics/safetyIndex/@score"/>
-                                </div>
-                                <div class="kpi-label">
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'safety_index'"/>
-                                    </xsl:call-template>
-                                </div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: {/smartCity/analytics/safetyIndex/@score}%"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="kpi-card">
-                                <div class="kpi-value">
-                                    <xsl:value-of select="/smartCity/analytics/sustainabilityIndex/@score"/>
-                                </div>
-                                <div class="kpi-label">
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'sustainability_index'"/>
-                                    </xsl:call-template>
-                                </div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: {/smartCity/analytics/sustainabilityIndex/@score}%"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="kpi-card">
-                                <div class="kpi-value">
-                                    <xsl:value-of select="/smartCity/analytics/citizenSatisfaction/@score"/>
-                                </div>
-                                <div class="kpi-label">
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'citizen_satisfaction'"/>
-                                    </xsl:call-template>
-                                </div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: {/smartCity/analytics/citizenSatisfaction/@score}%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- City Information -->
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-info-circle"></i>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'city_information'"/>
-                                </xsl:call-template>
-                            </h3>
-                        </div>
-                        <div class="user-details">
-                            <xsl:for-each select="/smartCity/cityInfo/*">
-                                <div class="user-detail">
-                                    <span class="detail-label">
-                                        <xsl:choose>
-                                            <xsl:when test="name()='mayor'">Mayor</xsl:when>
-                                            <xsl:when test="name()='emergencyNumber'">
-                                                <xsl:call-template name="t">
-                                                    <xsl:with-param name="key" select="'emergency'"/>
-                                                </xsl:call-template>
-                                            </xsl:when>
-                                            <xsl:when test="name()='website'">
-                                                <xsl:call-template name="t">
-                                                    <xsl:with-param name="key" select="'website'"/>
-                                                </xsl:call-template>
-                                            </xsl:when>
-                                            <xsl:when test="name()='timezone'">
-                                                <xsl:call-template name="t">
-                                                    <xsl:with-param name="key" select="'timezone'"/>
-                                                </xsl:call-template>
-                                            </xsl:when>
-                                            <xsl:when test="name()='status'">
-                                                <xsl:call-template name="t">
-                                                    <xsl:with-param name="key" select="'status'"/>
-                                                </xsl:call-template>
-                                            </xsl:when>
-                                        </xsl:choose>
-                                    </span>
-                                    <span class="detail-value">
-                                        <xsl:choose>
-                                            <xsl:when test="name()='website'">
-                                                <a href="{.}" style="color: var(--primary-light); text-decoration: none;">
-                                                    <xsl:value-of select="."/>
-                                                </a>
-                                            </xsl:when>
-                                            <xsl:otherwise>
-                                                <xsl:value-of select="."/>
-                                            </xsl:otherwise>
-                                        </xsl:choose>
-                                    </span>
-                                </div>
-                            </xsl:for-each>
-                            <div class="user-detail">
-                                <span class="detail-label">
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'population'"/>
-                                    </xsl:call-template>
-                                </span>
-                                <span class="detail-value"><xsl:value-of select="format-number(/smartCity/@population, '#,##0')"/></span>
-                            </div>
-                            <div class="user-detail">
-                                <span class="detail-label">
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'version'"/>
-                                    </xsl:call-template>
-                                </span>
-                                <span class="detail-value"><xsl:value-of select="/smartCity/@version"/></span>
-                            </div>
-                            <div class="user-detail">
-                                <span class="detail-label">
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'date'"/>
-                                    </xsl:call-template>
-                                </span>
-                                <span class="detail-value"><xsl:value-of select="/smartCity/@date"/></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- City Summary -->
-                    <div class="dashboard-card">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-chart-pie"></i>
-                                <xsl:call-template name="t">
-                                    <xsl:with-param name="key" select="'city_summary'"/>
-                                </xsl:call-template>
-                            </h3>
-                        </div>
-                        <div class="user-details">
-                            <div class="user-detail">
-                                <span class="detail-label">
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'total_incidents_today'"/>
-                                    </xsl:call-template>
-                                </span>
-                                <span class="detail-value"><xsl:value-of select="count(/smartCity/security/incident)"/></span>
-                            </div>
-                            <div class="user-detail">
-                                <span class="detail-label">
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'iot_connectivity'"/>
-                                    </xsl:call-template>
-                                </span>
-                                <xsl:variable name="iotPercent" select="round(/smartCity/iotDevices/@connected div /smartCity/iotDevices/@total * 100)"/>
-                                <span class="detail-value"><xsl:value-of select="$iotPercent"/>%</span>
-                            </div>
-                            <div class="user-detail">
-                                <span class="detail-label">
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'public_transport_status'"/>
-                                    </xsl:call-template>
-                                </span>
-                                <span class="detail-value">
-                                    <xsl:value-of select="count(/smartCity/infrastructure/publicTransport/*[@status='Operational'])"/>/<xsl:value-of select="count(/smartCity/infrastructure/publicTransport/*)"/>
-                                </span>
-                            </div>
-                            <div class="user-detail">
-                                <span class="detail-label">
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'air_quality_sensors'"/>
-                                    </xsl:call-template>
-                                </span>
-                                <span class="detail-value"><xsl:value-of select="count(/smartCity/environment/airQuality/sensor)"/></span>
-                            </div>
-                            <div class="user-detail">
-                                <span class="detail-label">
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'active_cameras'"/>
-                                    </xsl:call-template>
-                                </span>
-                                <span class="detail-value">
-                                    <xsl:value-of select="count(/smartCity/security/surveillance/camera[@status='Active'])"/>/<xsl:value-of select="count(/smartCity/security/surveillance/camera)"/>
-                                </span>
-                            </div>
-                            <div class="user-detail">
-                                <span class="detail-label">
-                                    <xsl:call-template name="t">
-                                        <xsl:with-param name="key" select="'hospital_beds_available'"/>
-                                    </xsl:call-template>
-                                </span>
-                                <span class="detail-value"><xsl:value-of select="sum(/smartCity/services/hospital/@bedsAvailable)"/></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-        </main>
-    </div>
-
-    <script>
-        // Logout function
-function logout() {
-    // Clear session storage
-    sessionStorage.removeItem('neocity_authenticated');
-    sessionStorage.removeItem('neocity_user');
-    
-    // Redirect to login page
-    window.location.href = 'index.html';
-}
-        // Navigation
-        function showSection(sectionId) {
-            // Remove active class from all buttons and sections
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
-
-            // Add active class to clicked button
-            event.currentTarget.classList.add('active');
-            
-            // Show selected section
-            document.getElementById(sectionId).classList.add('active');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecocity 2.0 | Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        // Initialize animations when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            // Animate progress bars
-            setTimeout(() => {
-                document.querySelectorAll('.progress-fill').forEach(bar => {
-                    const width = bar.style.width;
-                    bar.style.width = '0%';
-                    setTimeout(() => {
-                        bar.style.width = width;
-                    }, 100);
-                });
-            }, 500);
-            
-            // Add hover effects
-            document.querySelectorAll('.dashboard-card, .kpi-card, .user-card').forEach(card => {
-                card.addEventListener('mouseenter', () => {
-                    card.style.transform = 'translateY(-5px)';
-                });
-                
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = 'translateY(0)';
-                });
-            });
-            
-            // Update active language button
-            const urlParams = new URLSearchParams(window.location.search);
-            const lang = urlParams.get('lang') || 'en';
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.getAttribute('href').includes(`lang=${lang}`)) {
-                    btn.classList.add('active');
-                }
-            });
-        });
+        :root {
+    --background: #052e2b;       /* Dark eco green */
+    --card: #064e3b;             /* Card background */
+    --card-border: #10b981;      /* Teal border */
+    --primary: #22c55e;          /* Green button */
+    --primary-hover: #16a34a;    /* Darker green hover */
+    --foreground: #ecfdf5;       /* Light mint text */
+    --muted: #94a3b8;
+    --input-bg: #065f46;         /* Input field bg */
+    --input-border: #10b981;     /* Input border */
+}
 
-        // Real-time update simulation
-        setInterval(() => {
-            // Animate pulse elements
-            const pulseElements = document.querySelectorAll('.pulse');
-            pulseElements.forEach(el => {
-                el.style.opacity = '0.6';
-                setTimeout(() => {
-                    el.style.opacity = '1';
-                }, 300);
-            });
-        }, 2000);
-    </script>
-    <script src="./dashboard.js"></script>
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background Effects */
+        .glow {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.12), transparent 70%);
+            pointer-events: none;
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        .glow-1 { top: -100px; left: 20%; }
+        .glow-2 { bottom: -100px; right: 20%; animation-delay: 1.5s; }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .grid-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        /* Login Card */
+        .login-card {
+            background: linear-gradient(180deg, var(--card), #10131f);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 8px 32px rgba(10, 10, 20, 0.5);
+        }
+
+        /* Logo */
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .logo-icon svg {
+            width: 28px;
+            height: 28px;
+            color: white;
+        }
+
+        .logo-text h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .logo-text h1 span {
+            color: var(--primary);
+        }
+
+        .logo-text p {
+            font-size: 12px;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--muted);
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper svg {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            color: var(--muted);
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 10px;
+            color: var(--foreground);
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        .input-wrapper input::placeholder {
+            color: var(--muted);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            padding: 0;
+            transition: color 0.2s;
+        }
+
+        .password-toggle:hover {
+            color: var(--foreground);
+        }
+
+        /* Options Row */
+        .options-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .remember-me span {
+            font-size: 14px;
+            color: var(--muted);
+            transition: color 0.2s;
+        }
+
+        .remember-me:hover span {
+            color: var(--foreground);
+        }
+
+        .forgot-link {
+            font-size: 14px;
+            color: var(--primary);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .forgot-link:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 40px rgba(139, 92, 246, 0.5);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .submit-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 24px 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--card-border);
+        }
+
+        /* Social Buttons */
+        .social-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .social-btn {
+            padding: 12px 16px;
+            background: transparent;
+            border: 1px solid var(--primary);
+            border-radius: 10px;
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .social-btn:hover {
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .social-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Sign Up Link */
+        .signup-link {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .signup-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Version Badge */
+        .version-badge {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        /* Error Message */
+        .error-message {
+            display: none;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+    <div class="grid-overlay"></div>
+
+    <!-- Login Card -->
+    <div class="login-card">
+        <!-- Logo -->
+        <div class="logo-container">
+            <div class="logo-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+            </div>
+            <div class="logo-text">
+                <h1>NeoCity <span>2.0</span></h1>
+                <p>
+                    <span class="status-dot"></span>
+                    Smart City Dashboard • Real-time Monitoring
+                </p>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <div class="header">
+            <h2>Welcome Back</h2>
+            <p>Sign in to access your dashboard</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message"></div>
+
+        <!-- Form -->
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <div class="input-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <input type="email" id="email" placeholder="admin@neocity.io" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword()">
+                        <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="options-row">
+                <label class="remember-me">
+                    <input type="checkbox" id="remember">
+                    <span>Remember me</span>
+                </label>
+                <a href="#" class="forgot-link">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Sign In
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+            </button>
+        </form>
+
+        <div class="divider">or continue with</div>
+
+        <div class="social-buttons">
+            <button type="button" class="social-btn">
+                <svg viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Google
+            </button>
+            <button type="button" class="social-btn">
+                <svg fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+                GitHub
+            </button>
+        </div>
+
+        <p class="signup-link">
+            Don't have an account? <a href="#">Create account</a>
+        </p>
+    </div>
+
+    <!-- Version Badge -->
+    <div class="version-badge">v2.0.0 • © 2026 NeoCity</div>
+
+    <script src="./login.js"></script>
 </body>
 </html>
-</xsl:template>
-</xsl:stylesheet>
